@@ -30,4 +30,17 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Telegram bot
+    |--------------------------------------------------------------------------
+    |
+    | @see https://github.com/laravel-notification-channels/telegram
+    |
+    */
+
+    'telegram-bot-api' => [
+        'token' => env('TELEGRAM_BOT_TOKEN', 'YOUR BOT TOKEN HERE')
+    ],
+
 ];
