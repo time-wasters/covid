@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\FederalState;
 use Illuminate\Console\Command;
 
 class NotifyAboutHospitals extends Command
@@ -11,14 +12,14 @@ class NotifyAboutHospitals extends Command
      *
      * @var string
      */
-    protected $signature = 'command:name';
+    protected $signature = 'notify:about-hospitals';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Notifies about the state of hospitals';
 
     /**
      * Create a new command instance.
@@ -37,6 +38,10 @@ class NotifyAboutHospitals extends Command
      */
     public function handle()
     {
+        $federalState = FederalState::getHospitalInfo(FederalState::STATE_BAVARIA);
+
+        // ToDo: Notify
+
         return Command::SUCCESS;
     }
 }
