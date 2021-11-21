@@ -37,12 +37,10 @@ class FederalState extends Model
     {
         $states = collect(
             Http::acceptJson()
-                ->get('https://www.intensivregister.de/api/public/reporting/laendertabelle')
+                ->get(config('covid.hospital_info.url'))
                 ->throw()
                 ->json('data')
         )->keyBy('bundesland');
-
-        dd($states->keys());
 
         return $states->get($state);
     }
