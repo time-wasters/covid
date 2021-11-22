@@ -46,6 +46,15 @@ return [
         //            'username'  => 'AnotherTelegram_Bot',
         //            'token' => '123456:abc',
         //        ],
+
+        'time_waster' => [
+            'username'            => env('TELEGRAM_TW_BOT_NAME', 'TheBotFather'),
+            'token'               => env('TELEGRAM_TW_BOT_TOKEN', 'YOUR-BOT-TOKEN'),
+            'certificate_path'    => env('TELEGRAM_TW_CERTIFICATE_PATH', 'YOUR-CERTIFICATE-PATH'),
+            'webhook_url'         => env('TELEGRAM_TW_WEBHOOK_URL', 'YOUR-BOT-WEBHOOK-URL'),
+            'chat_id'             => env('TELEGRAM_TW_CHAT_ID'),
+            'commands'            => [],
+        ],
     ],
 
     /*
@@ -57,7 +66,7 @@ return [
     | your default bot for regular use.
     |
     */
-    'default'                      => 'mybot',
+    'default'                      => 'time_waster',
 
     /*
     |--------------------------------------------------------------------------

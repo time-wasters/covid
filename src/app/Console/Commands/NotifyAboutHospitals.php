@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\FederalState;
 use Illuminate\Console\Command;
+use Telegram\Bot\Laravel\Facades\Telegram;
 
 class NotifyAboutHospitals extends Command
 {
@@ -40,7 +41,10 @@ class NotifyAboutHospitals extends Command
     {
         $federalState = FederalState::getHospitalInfo(FederalState::STATE_BAVARIA);
 
-        // ToDo: Notify
+        $response = Telegram::sendMessage([
+            'chat_id' => config('telegram.bots.time_waster.chat_id'),
+            'text' => 'Hello World'
+        ]);
 
         return Command::SUCCESS;
     }
