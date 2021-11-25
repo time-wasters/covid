@@ -62,12 +62,14 @@ class NotifyAboutHospitals extends Command
          * Setup variables for easier-to-read code below
          */
 
-        $federalStateName    = Str::of($federalState['bundesland'])->title();
-        $percentageBedsInUse = round($federalState['bettenBelegtToBettenGesamtPercent']) . '%';
-        $intenseCareInUse    = $federalState['intensivBettenBelegt'];
-        $intenseCareBeds     = $federalState['intensivBettenGesamt'];
-        $percentageAspirated = round($federalState['faelleCovidAktuellBeatmetToCovidAktuellPercent']) . '%';
-        $creationTimestamp   = Carbon::createFromDate($federalState['creationTimestamp'])->locale('de_DE')->isoFormat('lll');
+        $federalStateName     = Str::of($federalState['bundesland'])->title();
+        $percentageBedsInUse  = round($federalState['bettenBelegtToBettenGesamtPercent']) . '%';
+        $intenseCareAvailable = $federalState['intensivBettenFrei'];
+        $covidAvailable       = $federalState['covidKapazitaetFrei'];
+        $intenseCareInUse     = $federalState['intensivBettenBelegt'];
+        $intenseCareBeds      = $federalState['intensivBettenGesamt'];
+        $percentageAspirated  = round($federalState['faelleCovidAktuellBeatmetToCovidAktuellPercent']) . '%';
+        $creationTimestamp    = Carbon::createFromDate($federalState['creationTimestamp'])->locale('de_DE')->isoFormat('lll');
 
         // Percent COVID from JSON is "covid cases / all intense care beds" but we want percent covid of used beds
         $percentCovidBedsInUse = round($federalState['faelleCovidAktuell'] / $intenseCareInUse * 100) . '%';
@@ -76,14 +78,36 @@ class NotifyAboutHospitals extends Command
          * Now create the message
          */
 
-        $text = 'Krankenhausauslastung *' . $federalStateName . ': ' . $percentageBedsInUse . "\n";
-        $text .= 'Intensivbetten belegt: ' . $intenseCareInUse . ' von ' . $intenseCareBeds . "\n";
-        $text .= '... davon COVID: ' . $percentCovidBedsInUse . "\n";
-        $text .= '... davon beatmet: ' . $percentageAspirated . "\n";
-        $text .= "\n--\n";
-        $text .= '_Daten abgerufen am ' . $creationTimestamp . '_' . "\n";
-        $text .= 'Quelle: [intensivregister.de](https://www.intensivregister.de/#/aktuelle-lage/laendertabelle)';
+        $text = $this->l('Krankenhausauslastung *' . $federalStateName . '*: ' . $percentageBedsInUse);
+        $text .= $this->l();
+        $text .= $this->l('Intensivbetten frei: ' . $intenseCareAvailable . ', für COVID: ' . $covidAvailable);
+        $text .= $this->l('Intensivbetten belegt: ' . $intenseCareInUse . ' von ' . $intenseCareBeds);
+        $text .= $this->l('... davon COVID: ' . $percentCovidBedsInUse);
+        $text .= $this->l('... davon beatmet: ' . $percentageAspirated);
+        $text .= $this->footer($creationTimestamp);
 
         return $text;
+    }
+
+    /**
+     * Get one line of text
+     *
+     * @param string $text
+     * @return string
+     */
+    protected function l(string $text = null): string{
+        return $text . "\n";
+    }
+
+    /**
+     * Get footer as text
+     *
+     * @param string $creationTimestamp
+     * @return string
+     */
+    protected function footer(string $creationTimestamp): string{
+        return $this->l() . $this->l('--')
+               . $this->l('_Daten abgerufen am ' . $creationTimestamp . '_')
+               . 'Quelle: [intensivregister.de](https://www.intensivregister.de/#/aktuelle-lage/laendertabelle)';
     }
 }
