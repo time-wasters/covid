@@ -32,27 +32,12 @@ return [
     |             ]
     */
     'bots'                         => [
-        'mybot' => [
-            'username'            => 'TelegramBot',
+        'hospital_notifier' => [
+            'username'            => env('TELEGRAM_BOT_NAME', 'TheBotFather'),
             'token'               => env('TELEGRAM_BOT_TOKEN', 'YOUR-BOT-TOKEN'),
             'certificate_path'    => env('TELEGRAM_CERTIFICATE_PATH', 'YOUR-CERTIFICATE-PATH'),
             'webhook_url'         => env('TELEGRAM_WEBHOOK_URL', 'YOUR-BOT-WEBHOOK-URL'),
-            'commands'            => [
-                //Acme\Project\Commands\MyTelegramBot\BotCommand::class
-            ],
-        ],
-
-        //        'mySecondBot' => [
-        //            'username'  => 'AnotherTelegram_Bot',
-        //            'token' => '123456:abc',
-        //        ],
-
-        'time_waster' => [
-            'username'            => env('TELEGRAM_TW_BOT_NAME', 'TheBotFather'),
-            'token'               => env('TELEGRAM_TW_BOT_TOKEN', 'YOUR-BOT-TOKEN'),
-            'certificate_path'    => env('TELEGRAM_TW_CERTIFICATE_PATH', 'YOUR-CERTIFICATE-PATH'),
-            'webhook_url'         => env('TELEGRAM_TW_WEBHOOK_URL', 'YOUR-BOT-WEBHOOK-URL'),
-            'chat_id'             => env('TELEGRAM_TW_CHAT_ID'),
+            'chat_id'             => env('TELEGRAM_CHAT_ID'),
             'commands'            => [],
         ],
     ],
@@ -66,7 +51,7 @@ return [
     | your default bot for regular use.
     |
     */
-    'default'                      => 'time_waster',
+    'default'                      => 'hospital_notifier',
 
     /*
     |--------------------------------------------------------------------------
