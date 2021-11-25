@@ -42,8 +42,8 @@ class NotifyAboutHospitals extends Command
     public function handle()
     {
         Telegram::sendMessage([
-            'chat_id' => config('telegram.bots.time_waster.chat_id'),
-            'text'    => $this->getTelegramMessage(FederalState::getHospitalInfo(FederalState::STATE_BAVARIA)),
+            'chat_id'    => config('telegram.bots.time_waster.chat_id'),
+            'text'       => $this->getTelegramMessage(FederalState::getHospitalInfo(FederalState::STATE_BAVARIA)),
             'parse_mode' => 'Markdown'
         ]);
 
