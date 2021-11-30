@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\FederalState;
+use App\Services\DiviClient;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
@@ -25,12 +25,21 @@ class NotifyAboutHospitals extends Command
     protected $description = 'Notifies about the state of hospitals';
 
     /**
+     * API Client for DIVI-Intensivregister
+     *
+     * @var IntensivRegister
+     */
+    protected $divi;
+
+    /**
      * Create a new command instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(DiviClient $divi)
     {
+        $this->divi = $divi;
+
         parent::__construct();
     }
 
@@ -43,7 +52,7 @@ class NotifyAboutHospitals extends Command
     {
         Telegram::sendMessage([
             'chat_id'                  => config('telegram.bots.hospital_notifier.chat_id'),
-            'text'                     => $this->getTelegramMessage(FederalState::getHospitalInfo(FederalState::STATE_BAVARIA)),
+            'text'                     => $this->getTelegramMessage($this->divi->getHospitalInfo(DiviClient::STATE_BAVARIA)),
             'parse_mode'               => 'Markdown',
             'disable_web_page_preview' => true
         ]);
@@ -91,7 +100,7 @@ class NotifyAboutHospitals extends Command
     }
 
     /**
-     * Get one line of text
+     * Create a line of text using a linebreak at the end
      *
      * @param string $text
      * @return string
