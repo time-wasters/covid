@@ -24,7 +24,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        /**
+         * Send out hospital information, use custom cron schedule expression if defined
+         */
+        $expression = config('covid.message_schedule');
+        $schedule->command('notify:about-hospitals')->{$expression ? 'cron' : 'dailyAt'}($expression ?: '10:30');
     }
 
     /**
