@@ -54,7 +54,7 @@ class NotifyAboutHospitals extends Command
             'chat_id'                  => config('telegram.bots.hospital_notifier.chat_id'),
             'text'                     => $this->getTelegramMessage($this->divi->getHospitalInfo(DiviClient::STATE_BAVARIA)),
             'parse_mode'               => 'Markdown',
-            'disable_web_page_preview' => true
+            'disable_web_page_preview' => true,
         ]);
 
         return Command::SUCCESS;

@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Http;
  */
 class ArcGisClient
 {
+    /** @var string ArcGIS API URL */
+    const BASE_URL = 'https://services7.arcgis.com/mOBPykOjAyBO2ZKk/arcgis/rest/services/RKI_Landkreisdaten/FeatureServer/0/query';
+
     /**
      * @var array Handled counties
      */
@@ -22,9 +25,6 @@ class ArcGisClient
         'KELHEIM'          => '251',
         'SCHWANDORF'       => '266',
     ];
-
-    /** @var string ArcGIS API URL */
-    const BASE_URL = 'https://services7.arcgis.com/mOBPykOjAyBO2ZKk/arcgis/rest/services/RKI_Landkreisdaten/FeatureServer/0/query';
 
     /** @var Http HTTP request client */
     protected $client;

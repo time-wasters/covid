@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Http;
  */
 class DiviClient
 {
+    /** @var string Divi API URL */
+    const BASE_URL = 'https://www.intensivregister.de/api/public/reporting/laendertabelle';
+
+    /** @var string States of Germany internationalized as enums */
     const STATE_BADEN_WUERTTEMBERG            = 'BADEN_WUERTTEMBERG';
     const STATE_BAVARIA                       = 'BAYERN';
     const STATE_BERLIN                        = 'BERLIN';
@@ -44,6 +48,16 @@ class DiviClient
     }
 
     /**
+     * Returns the base URL.
+     *
+     * @return string
+     */
+    public function getBaseUrl(): string
+    {
+        return static::BASE_URL;
+    }
+
+    /**
      * Returns the hospital info of the requested state
      *
      * @param string $state The state, use constants of this model
@@ -53,12 +67,11 @@ class DiviClient
     {
         $states = collect(
             $this->client::acceptJson()
-                 ->get(config('covid.hospital_info.url'))
+                 ->get($this->getBaseUrl())
                  ->throw()
                  ->json('data')
         )->keyBy('bundesland');
 
         return $states->get($state);
     }
-
 }
