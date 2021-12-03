@@ -1,9 +1,9 @@
 @foreach ($counties as $county)
-    <ins>{{ $county['GEN'] }} ({{ $county['BEZ'] }})</ins>
-    Fälle (gesamt):            <em>{{ $county['cases'] }}</em> [+X]
-    7Tage/100K EW:         <strong>{{ $county['cases7_per_100k_txt'] }}</strong> [-X]
-    Fälle letzte 7 Tage:     <strong>{{ $county['cases7_lk'] }}</strong> [-X]
-    Todesfälle (gesamt):  <em>{{ $county['deaths'] }}</em> [+X]
+<ins>{{ $county['GEN'] }} ({{ $county['BEZ'] }})</ins>
+Fälle (gesamt):            <em>{{ $county['cases'] }}</em> [+X]
+7Tage/100K EW:         <strong>{{ $county['cases7_per_100k_txt'] }}</strong> [-X]
+Fälle letzte 7 Tage:     <strong>{{ $county['cases7_lk'] }}</strong> [-X]
+Todesfälle (gesamt):  <em>{{ $county['deaths'] }}</em> [+X]
 
 @endforeach
 {{ $date }}

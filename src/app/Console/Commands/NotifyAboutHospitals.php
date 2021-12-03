@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use App\Services\DiviClient;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Str;
 use Telegram\Bot\Laravel\Facades\Telegram;
 
 class NotifyAboutHospitals extends Command
@@ -50,74 +49,17 @@ class NotifyAboutHospitals extends Command
      */
     public function handle()
     {
+        $federalState = $this->divi->getHospitalInfo(DiviClient::STATE_BAVARIA);
+        $date         = Carbon::createFromDate($federalState['creationTimestamp'])->locale('de_DE')->isoFormat('lll');
+        $message      = view('telegram.hospitals', ['federalState' => $federalState, 'date' => $date])->render();
+
         Telegram::sendMessage([
             'chat_id'                  => config('telegram.bots.hospital_notifier.chat_id'),
-            'text'                     => $this->getTelegramMessage($this->divi->getHospitalInfo(DiviClient::STATE_BAVARIA)),
-            'parse_mode'               => 'Markdown',
+            'text'                     => $message,
+            'parse_mode'               => 'HTML',
             'disable_web_page_preview' => true,
         ]);
 
         return Command::SUCCESS;
-    }
-
-    /**
-     * Human readable message formatted to be used in Telegram.
-     *
-     * @param array $federalState
-     * @return string
-     */
-    protected function getTelegramMessage(array $federalState)
-    {
-        /*
-         * Setup variables for easier-to-read code below
-         */
-
-        $federalStateName     = Str::of($federalState['bundesland'])->title();
-        $percentageBedsInUse  = round($federalState['bettenBelegtToBettenGesamtPercent']) . '%';
-        $intenseCareAvailable = $federalState['intensivBettenFrei'];
-        $covidAvailable       = $federalState['covidKapazitaetFrei'];
-        $intenseCareInUse     = $federalState['intensivBettenBelegt'];
-        $intenseCareBeds      = $federalState['intensivBettenGesamt'];
-        $percentageAspirated  = round($federalState['faelleCovidAktuellBeatmetToCovidAktuellPercent']) . '%';
-        $creationTimestamp    = Carbon::createFromDate($federalState['creationTimestamp'])->locale('de_DE')->isoFormat('lll');
-
-        // Percent COVID from JSON is "covid cases / all intense care beds" but we want percent covid of used beds
-        $percentCovidBedsInUse = round($federalState['faelleCovidAktuell'] / $intenseCareInUse * 100) . '%';
-
-        /*
-         * Now create the message
-         */
-
-        $text = $this->l('Krankenhausauslastung *' . $federalStateName . '*: ' . $percentageBedsInUse);
-        $text .= $this->l();
-        $text .= $this->l('Intensivbetten frei: ' . $intenseCareAvailable . ', für COVID: ' . $covidAvailable);
-        $text .= $this->l('Intensivbetten belegt: ' . $intenseCareInUse . ' von ' . $intenseCareBeds);
-        $text .= $this->l('... davon COVID: ' . $percentCovidBedsInUse);
-        $text .= $this->l('... davon beatmet: ' . $percentageAspirated);
-        $text .= $this->footer($creationTimestamp);
-
-        return $text;
-    }
-
-    /**
-     * Create a line of text using a linebreak at the end
-     *
-     * @param string $text
-     * @return string
-     */
-    protected function l(string $text = null): string{
-        return $text . "\n";
-    }
-
-    /**
-     * Get footer as text
-     *
-     * @param string $creationTimestamp
-     * @return string
-     */
-    protected function footer(string $creationTimestamp): string{
-        return $this->l() . $this->l('--')
-               . $this->l('_Daten abgerufen am ' . $creationTimestamp . '_')
-               . 'Quelle: [intensivregister.de](https://www.intensivregister.de/#/aktuelle-lage/laendertabelle)';
     }
 }
