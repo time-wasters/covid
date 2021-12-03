@@ -4,6 +4,9 @@ namespace App\Console\Commands;
 
 use App\Services\ArcGisClient;
 use Illuminate\Console\Command;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Telegram\Bot\Laravel\Facades\Telegram;
 
 class NotifyAboutConfirmedCases extends Command
@@ -56,24 +59,24 @@ class NotifyAboutConfirmedCases extends Command
     /**
      * Human readable message formatted to be used in Telegram.
      *
-     * @param array $counties
+     * @param array|Collection $counties
      * @return void
      */
-    protected function getTelegramMessage(array $counties){
+    protected function getTelegramMessage(array|Collection $counties){
         $html = '';
 
-        // ToDo: Fill placeholders
+        // ToDo: Fill de-/increases after DB is up and running
 
         foreach($counties as $county){
             $html .= $this->l('<ins>' . $county['GEN'] . ' (' . $county['BEZ'] . ')' . '</ins>');
-            $html .= $this->l('Fälle (gesamt):            <em>10549</em> [+108]');
-            $html .= $this->l('7Tage/100K EW:         <strong>547</strong> [-21]');
-            $html .= $this->l('Fälle letzte 7 Tage:     <strong>547</strong> [-21]');
-            $html .= $this->l('Todesfälle (gesamt):  <em>125</em> [-21]');
+            $html .= $this->l('Fälle (gesamt):            <em>' . $county['cases'] . '</em> [+X]');
+            $html .= $this->l('7Tage/100K EW:         <strong>' . $county['cases7_per_100k_txt'] . '</strong> [-X]');
+            $html .= $this->l('Fälle letzte 7 Tage:     <strong>' . $county['cases7_lk'] . '</strong> [-X]');
+            $html .= $this->l('Todesfälle (gesamt):  <em>' . $county['deaths'] . '</em> [+X]');
             $html .= $this->l();
         }
 
-        $html .= $this->footer('now');
+        $html .= $this->footer(Arr::get($counties->first(), 'last_update'));
 
         return $html;
 
@@ -97,7 +100,7 @@ class NotifyAboutConfirmedCases extends Command
      */
     protected function footer(string $creationTimestamp): string{
         return $this->l()
-               . $this->l('Dec 2, 2021')
+               . $this->l(Carbon::createFromFormat('d.m.Y, H:i \U\h\r', $creationTimestamp)->format('M j, Y'))
                . $this->l('<i>Quelle:</i> <a href="https://experience.arcgis.com/experience/478220a4c454480e823b17327b2bf1d4" title="https://experience.arcgis.com/experience/478220a4c454480e823b17327b2bf1d4" target="_blank" rel="noopener noreferrer" class="text-entity-link" dir="auto">RKI</a>');
     }
 }
