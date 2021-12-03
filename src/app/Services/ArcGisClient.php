@@ -53,7 +53,7 @@ class ArcGisClient
      * Returns the confirmed cases of given counties for all or one county.
      *
      * @param int $county Use ArcGisClient::COUNTIES array to filter
-     * @return null|array
+     * @return null|Collection
      */
     public function getConfirmedCases(int $county = null)
     {
