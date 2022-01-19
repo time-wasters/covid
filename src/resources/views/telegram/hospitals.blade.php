@@ -1,9 +1,9 @@
-Krankenhausauslastung <strong>{{ Str::of($federalState['bundesland'])->title() }}</strong>: {{ round($federalState['bettenBelegtToBettenGesamtPercent']) }}%
+Krankenhausauslastung {{ Str::of($federalState['bundesland'])->title() }}: <ins><strong>{{ round($federalState['bettenBelegtToBettenGesamtPercent']) }}%</strong></ins>
 
 Intensivbetten frei: {{ $federalState['intensivBettenFrei'] }}, für COVID: {{ $federalState['covidKapazitaetFrei'] }}
 Intensivbetten belegt: {{ $federalState['intensivBettenBelegt'] }} von {{ $federalState['intensivBettenGesamt'] }}
-... davon COVID: {{ round($federalState['faelleCovidAktuell'] / $federalState['intensivBettenBelegt'] * 100) }}%
-... davon beatmet: {{ round($federalState['faelleCovidAktuellBeatmetToCovidAktuellPercent']) }}%
+... davon COVID: {{ $federalState['faelleCovidAktuell'] }} (<strong>≈{{ round($federalState['faelleCovidAktuell'] / $federalState['intensivBettenBelegt'] * 100) }}%</strong>)
+... davon beatmet: {{ $federalState['faelleCovidAktuellBeatmet'] }} (≈{{ round($federalState['faelleCovidAktuellBeatmetToCovidAktuellPercent']) }}%)
 
 --
 Daten abgerufen am {{ $date }}
