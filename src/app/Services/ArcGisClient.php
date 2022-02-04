@@ -57,17 +57,16 @@ class ArcGisClient
      */
     public function getConfirmedCases(int $county = null)
     {
-        $counties = collect(
-            $this->client::acceptJson()
-                 ->get($this->getBaseUrl(), [
-                     'objectIds'      => implode(',', static::COUNTIES),
-                     'outFields'      => '*',
-                     'f'              => 'pgeojson',
-                     'returnGeometry' => 'false',
-                     'returnCentroid' => 'false',])
-                 ->throw()
-                 ->json('features.*.properties')
-        )->keyBy('OBJECTID'); 
+        $counties = $this->client::acceptJson()
+             ->get($this->getBaseUrl(), [
+                 'objectIds'      => implode(',', static::COUNTIES),
+                 'outFields'      => '*',
+                 'f'              => 'pgeojson',
+                 'returnGeometry' => 'false',
+                 'returnCentroid' => 'false',])
+             ->throw()
+             ->collect('features.*.properties')
+             ->keyBy('OBJECTID');
 
         return $counties ?? $counties->get($county);
     }
